@@ -5,6 +5,11 @@ on: [ workflow_dispatch ]
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - run: echo Hello, world!
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+          architecture: 'x64'
+      - run: python main.py
