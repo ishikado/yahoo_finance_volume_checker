@@ -12,4 +12,7 @@ jobs:
         with:
           python-version: '3.8'
           architecture: 'x64'
-      - run: python main.py
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run Python
+        run: python main.py
