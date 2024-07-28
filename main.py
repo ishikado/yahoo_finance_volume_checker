@@ -27,8 +27,12 @@ def check(ticker):
     return today_volume >= avg_volume
     
 
-
-ticker = "AAPL"
-if check(ticker):
+def output_url(ticker):
     print (ticker + " https://finance.yahoo.com/quote/" + ticker + "/")
 
+def main():
+    ticker = "AAPL"
+    if check(ticker):
+        output_url(ticker)
+
+main()
