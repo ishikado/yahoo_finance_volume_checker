@@ -72,7 +72,7 @@ def main():
         # TODO: 株価が取れない場合があるので例外処理を入れたい
         if check(ticker):
             results.append(ticker)
-        time.sleep(3)
+        time.sleep(1)
 
     for ticker in results:
         output_url(ticker)
