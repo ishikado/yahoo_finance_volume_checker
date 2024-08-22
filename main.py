@@ -6,16 +6,19 @@ import yfinance as yf
 import time
 import sys
 import datetime
+import pytz
+
+def is_summer_time(nytimenow):
+    return nytimenow.dst() != None and nytimenow.dst().total_seconds() != 0
 
 
-def calc_elappsed_time_ratio(now_min):
-    # TODO: 夏時間も自動で切り替えたい
-    # 3月の第二日曜日から11月の第一日曜日までらしい
-    is_summer = True
+def calc_elappsed_time_ratio(now_min, is_summer):
+    print (is_summer)
     if is_summer:
         start_min = 8 * 60 + 30
         end_min = 15 * 60
     else:
+        # NOTE: こちらの動作確認はできていない
         start_min = 9 * 60 + 30
         end_min = 16 * 60
 
@@ -25,7 +28,7 @@ def calc_elappsed_time_ratio(now_min):
     return elappsed_time_ratio
     
 
-def check(ticker):
+def check(ticker, is_summer):
     # TODO: 
     # yf.Ticker(ticker).info とかで平均出来高含めて情報が取れるので、そっちで処理したほうがよさそう
     # 現在の株価も current Price みたいなデータで取れそう？
@@ -47,10 +50,10 @@ def check(ticker):
     avg_volume = sum_volume / cnt
     
     # ニューヨークのタイムゾーンで現在時刻を取得
-    nytimenow = datetime.datetime.now(tz = datetime.timezone(datetime.timedelta(hours=-4)))
+    nytimenow = datetime.datetime.now(pytz.timezone('America/New_York'))
     now_min = nytimenow.hour * 60 + nytimenow.minute
 
-    expected_today_volume = calc_elappsed_time_ratio(now_min) * today_volume
+    expected_today_volume = calc_elappsed_time_ratio(now_min, is_summer) * today_volume
 
     # for debug
     #print (ticker)
@@ -70,7 +73,7 @@ def main():
     results = []
     for ticker in tickers:
         # TODO: 株価が取れない場合があるので例外処理を入れたい
-        if check(ticker):
+        if check(ticker, is_summer_time(datetime.datetime.now(pytz.timezone('America/New_York')))):
             results.append(ticker)
         time.sleep(1)
 
