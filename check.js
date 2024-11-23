@@ -1,14 +1,14 @@
 function elappsedTimeRatio() {
-    var now = new Date();
+    let now = new Date();
     // 現在時刻を米国時間に合わせる
-    var chour = (now.getHours()  -  14 + 24) % 24;
-    var cmin = now.getMinutes();
-    var now_min = chour * 60 + cmin
+    let chour = (now.getHours()  -  14 + 24) % 24;
+    let cmin = now.getMinutes();
+    let now_min = chour * 60 + cmin
 
     // 夏時間かどうかのフラグ
-    var is_summer = false
-    var start_min = 9 * 60 + 30
-    var end_min   = 16 * 60
+    let is_summer = false
+    let start_min = 9 * 60 + 30
+    let end_min   = 16 * 60
     if (is_summer) {
         start_min = 8 * 60 + 30
         end_min   = 15 * 60
@@ -22,36 +22,51 @@ function elappsedTimeRatio() {
 }
 
 function toNumber(number_string) {
-    without_comma = number_string.replace(",", "")
-    if (without_comma.slice(-1) == "k" ) {
-        return parseFloat(without_comma.slice(0, without_comma.length - 1)) * 1000
-    } else if (without_comma.slice(-1) == "M" ) {
-        return parseFloat(without_comma.slice(0, without_comma.length - 1)) * 1000000
-    } else {
-        return parseFloat(without_comma.slice(0, without_comma.length ))
+    let without_comma = number_string.replace(",", "").trim()
+    // string の先頭に符号がつくことに注意
+    // コンマを取る -> 符号を取る -> suffix があれば suffix を取る -> すべてを考慮した数字を計算する
+    let without_sign = without_comma
+    let is_positive = true
+    if(without_comma[0] == '+'){
+        without_sign = without_comma.slice(1)
+    } else if(without_comma[0] == '-'){
+        is_positive = false
+        without_sign = without_comma.slice(1)
     }
+    let without_suffix = without_sign
+    let coef = 1
+    if (without_sign[without_sign.length - 1] == "k") {
+        without_suffix = without_sign.slice(0, without_sign.length - 1)
+        coef = 1000
+    } else if (without_sign[without_sign.length - 1] == "M") {
+        without_suffix = without_sign.slice(0, without_sign.length - 1)
+        coef = 1000 * 1000
+    }
+    let result = parseFloat(without_suffix) * coef
+    if(!is_positive) result *= -1
+    return result
 }
 
 
 function main() {
     if (location.href.startsWith('https://finance.yahoo.com/portfolio/')) {
-        var es = document.querySelectorAll('tr[class="row yf-1z0ossw"]');
-        var result = ""
+        let es = document.querySelectorAll('tr[class="row yf-1z0ossw"]');
+        let result = ""
         for (i = 0; i < es.length; i++) {
-            symbol = es[i].querySelector('td[class="yf-1z0ossw lpin"]')
+            let symbol = es[i].querySelector('td[class="yf-1z0ossw lpin"]')
                             .querySelector('div[style^=display]')
                             .querySelector('a[class="loud-link fin-size-medium yf-1e4diqp"]').innerHTML
 
             // symbol 以外の要素は class 名など attr 要素で一意に特定できないため、td で絞って順番に要素をなめている、yahoo finance 側の実装で順番が変わると機能しなくなるので注意
-            tds = es[i].querySelectorAll('td[class=" yf-1z0ossw"]')
-            rawVolume = tds[5].innerHTML
-            rawAvgVolume = tds[7].innerHTML
-            rawChange = tds[2].querySelector('span[class^="base"]').innerHTML
-            rawChangePer = tds[1].querySelector('span[class^="base"]').innerHTML
+            let tds = es[i].querySelectorAll('td[class=" yf-1z0ossw"]')
+            let rawVolume = tds[5].innerHTML
+            let rawAvgVolume = tds[7].innerHTML
+            let rawChange = tds[2].querySelector('span[class^="base"]').innerHTML
+            let rawChangePer = tds[1].querySelector('span[class^="base"]').innerHTML
 
-            volume = toNumber(rawVolume)
-            avg_volume = toNumber(rawAvgVolume)
-            change = toNumber(rawChange)
+            let volume = toNumber(rawVolume)
+            let avg_volume = toNumber(rawAvgVolume)
+            let change = toNumber(rawChange)
 
             // 株価が上昇していない場合は除外
             if(change < 0 ) continue
