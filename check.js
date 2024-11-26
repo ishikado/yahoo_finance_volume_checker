@@ -50,19 +50,19 @@ function toNumber(number_string) {
 
 function main() {
     if (location.href.startsWith('https://finance.yahoo.com/portfolio/')) {
-        let es = document.querySelectorAll('tr[class="row yf-1z0ossw"]');
+        let es = document.querySelectorAll('tr[class^="row "]');
         let result = ""
         for (i = 0; i < es.length; i++) {
-            let symbol = es[i].querySelector('td[class="yf-1z0ossw lpin"]')
+            // yahoo finance 側の要素の並べ方に依存した実装にしている、順番が変わると機能しなくなるので注意
+            let symbol = es[i].children[0]
                             .querySelector('div[style^=display]')
-                            .querySelector('a[class="loud-link fin-size-medium yf-1e4diqp"]').innerHTML
+                            .querySelector('a[class^="loud-link fin-size-medium "]').innerHTML
 
-            // symbol 以外の要素は class 名など attr 要素で一意に特定できないため、td で絞って順番に要素をなめている、yahoo finance 側の実装で順番が変わると機能しなくなるので注意
-            let tds = es[i].querySelectorAll('td[class=" yf-1z0ossw"]')
-            let rawVolume = tds[5].innerHTML
-            let rawAvgVolume = tds[7].innerHTML
-            let rawChange = tds[2].querySelector('span[class^="base"]').innerHTML
-            let rawChangePer = tds[1].querySelector('span[class^="base"]').innerHTML
+            let tds = es[i].children
+            let rawVolume = tds[6].innerHTML
+            let rawAvgVolume = tds[8].innerHTML
+            let rawChange = tds[3].querySelector('span[class^="base"]').innerHTML
+            let rawChangePer = tds[2].querySelector('span[class^="base"]').innerHTML
 
             let volume = toNumber(rawVolume)
             let avg_volume = toNumber(rawAvgVolume)
@@ -77,7 +77,7 @@ function main() {
                 result += symbol + " " + rawChangePer
                 result += "\n"
                 // 該当要素の背景色をかえる
-                es[i].querySelector('td[class="yf-1z0ossw lpin"]').setAttribute("style", "background: #00ff00")
+                es[i].setAttribute("style", "background: #00ff00")
             }
         }
         alert(result)
