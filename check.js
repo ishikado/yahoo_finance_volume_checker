@@ -48,43 +48,61 @@ function toNumber(number_string) {
 }
 
 
-function main() {
-    if (location.href.startsWith('https://finance.yahoo.com/portfolio/')) {
-        let es = document.querySelectorAll('tr[class^="row "]');
-        let result = ""
-        for (i = 0; i < es.length; i++) {
-            // yahoo finance 側の要素の並べ方に依存した実装にしている、順番が変わると機能しなくなるので注意
-            let symbol = es[i].children[0]
-                            .querySelector('div[style^=display]')
-                            .querySelector('a[class^="loud-link fin-size-medium "]').innerHTML
+function check_stock() {
+    let es = document.querySelectorAll('tr[class^="row "]');
+    let result = ""
+    for (i = 0; i < es.length; i++) {
+        // yahoo finance 側の要素の並べ方に依存した実装にしている、順番が変わると機能しなくなるので注意
+        let symbol = es[i].children[0]
+            .querySelector('div[style^=display]')
+            .querySelector('a[class^="loud-link fin-size-medium "]').innerHTML
 
-            let tds = es[i].children
-            let rawVolume = tds[6].innerHTML
-            let rawAvgVolume = tds[8].innerHTML
-            let rawChange = tds[3].querySelector('span[class^="base"]').innerHTML
-            let rawChangePer = tds[2].querySelector('span[class^="base"]').innerHTML
+        let tds = es[i].children
+        let rawVolume = tds[6].innerHTML
+        let rawAvgVolume = tds[8].innerHTML
+        let rawChange = tds[3].querySelector('span[class^="base"]').innerHTML
+        let rawChangePer = tds[2].querySelector('span[class^="base"]').innerHTML
 
-            let volume = toNumber(rawVolume)
-            let avg_volume = toNumber(rawAvgVolume)
-            let change = toNumber(rawChange)
+        let volume = toNumber(rawVolume)
+        let avg_volume = toNumber(rawAvgVolume)
+        let change = toNumber(rawChange)
 
-            // 株価が上昇していない場合は除外
-            if(change < 0 ) continue
+        // 株価が上昇していない場合は除外
+        if(change < 0 ) continue
 
-            // 市場の残り時間との比較を行う
-            if((1.0 * volume / avg_volume) > elappsedTimeRatio()) {
-                // debug 用
-                result += symbol + " " + rawChangePer
-                result += "\n"
-                // 該当要素の背景色をかえる
-                es[i].setAttribute("style", "background: #00ff00")
-            }
+        // 市場の残り時間との比較を行う
+        if((1.0 * volume / avg_volume) > elappsedTimeRatio()) {
+            // debug 用
+            result += symbol + " " + rawChangePer
+            result += "\n"
+            // 該当要素の背景色をかえる
+            es[i].setAttribute("style", "background: #00ff00")
         }
-        alert(result)
+    }
+    alert(result)
+}
+
+function register() {
+    // ボタン要素を作成
+    let btn = document.createElement("button");
+
+    // ボタンのテキストを設定
+    btn.innerHTML = "Start checking";
+    btn.onclick = check_stock;
+    btn.style.border = "solid 2px";
+
+    let es = document.querySelectorAll('div[class^="table-container"]');
+
+    // ボタンを追加
+    es[0].prepend(btn);
+}
+
+function main() {
+    if (location.href.startsWith('https://finance.yahoo.com/portfolio/p_')) {
+        // ページのロードが終わってから実行する
+        window.addEventListener("load", register, false);
     }
 }
 
-// ページのロードが終わってから実行する
-window.addEventListener("load", main, false);
+main()
 
-//main()
