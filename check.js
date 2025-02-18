@@ -54,7 +54,6 @@ function check_stock() {
     for (i = 0; i < es.length; i++) {
         // yahoo finance 側の要素の並べ方に依存した実装にしている、順番が変わると機能しなくなるので注意
         let symbol = es[i].children[0]
-            .querySelector('div[style^=display]')
             .querySelector('a[class^="loud-link fin-size-medium "]').innerHTML
 
         let tds = es[i].children
