@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "yahoo finance volume checker",
+  "description": "yahoo finance のポートフォリオに、今日の出来高の増加量が平均出来高を上回り、かつ株価が0より大きい銘柄を緑色でハイライトするボタンを追加します。",
+  "version": "0.1",
+  "content_scripts": [
+    {
+      "js": [
+        "scripts/check.js"
+      ],
+      "matches": [
+        "https://finance.yahoo.com/portfolio/p_*"
+      ]
+    }
+  ]
+}

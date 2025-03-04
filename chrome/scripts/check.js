@@ -97,10 +97,8 @@ function register() {
 }
 
 function main() {
-    if (location.href.startsWith('https://finance.yahoo.com/portfolio/p_')) {
-        // ページのロードが終わってから実行する
-        window.addEventListener("load", register, false);
-    }
+    // ページのロードが終わってから実行する
+    window.addEventListener("load", register, false);
 }
 
 main()
