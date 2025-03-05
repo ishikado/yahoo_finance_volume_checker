@@ -47,14 +47,22 @@ function toNumber(number_string) {
     return result
 }
 
+function check_stock_with_open_link() {
+    let results = check_stock()
+    for (var symbol of results) {
+        let link = "https://finance.yahoo.com/quote/" + symbol + "/chart/"
+        window.open(link);
+    }
+}
 
 function check_stock() {
     let es = document.querySelectorAll('tr[class^="row "]');
     let result = ""
+    let symbols = []
     for (i = 0; i < es.length; i++) {
         // yahoo finance 側の要素の並べ方に依存した実装にしている、順番が変わると機能しなくなるので注意
         let symbol = es[i].children[0]
-            .querySelector('a[class^="loud-link fin-size-medium "]').innerHTML
+            .querySelector('a[class^="loud-link fin-size-medium "]').innerHTML.trim()
 
         let tds = es[i].children
         let rawVolume = tds[6].innerHTML
@@ -76,9 +84,11 @@ function check_stock() {
             result += "\n"
             // 該当要素の背景色をかえる
             es[i].setAttribute("style", "background: #00ff00")
+            symbols.push(symbol)
         }
     }
     alert(result)
+    return symbols
 }
 
 function register() {
@@ -91,9 +101,18 @@ function register() {
     btn.style.border = "solid 2px";
 
     let es = document.querySelectorAll('div[class^="table-container"]');
-
     // ボタンを追加
     es[0].prepend(btn);
+
+    // ボタン要素を作成
+    let btn2 = document.createElement("button2");
+
+    // ボタンのテキストを設定
+    btn2.innerHTML = "Start checking with open link";
+    btn2.onclick = check_stock_with_open_link;
+    btn2.style.border = "solid 2px";
+
+    es[0].prepend(btn2);
 }
 
 function main() {
