@@ -1,3 +1,13 @@
+function isNYDST() {
+    const now = new Date();
+    const timeZone = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York',
+        timeZoneName: 'short'
+    }).formatToParts(now).find(part => part.type === 'timeZoneName').value;
+
+    return timeZone === "EDT"; // EDTなら夏時間, ESTなら標準時間
+}
+
 function elappsedTimeRatio() {
     let now = new Date();
     // 現在時刻を米国時間に合わせる
@@ -6,7 +16,7 @@ function elappsedTimeRatio() {
     let now_min = chour * 60 + cmin
 
     // 夏時間かどうかのフラグ
-    let is_summer = false
+    let is_summer = isNYDST();
     let start_min = 9 * 60 + 30
     let end_min   = 16 * 60
     if (is_summer) {
