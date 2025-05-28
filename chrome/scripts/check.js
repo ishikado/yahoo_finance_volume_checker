@@ -110,7 +110,7 @@ function register() {
     btn.onclick = check_stock;
     btn.style.border = "solid 2px";
 
-    let es = document.querySelectorAll('div[class^="table-container"]');
+    let es = document.querySelectorAll('div[class^="tableContainer"]');
     // ボタンを追加
     es[0].prepend(btn);
 
