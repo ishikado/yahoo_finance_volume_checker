@@ -115,7 +115,7 @@ function register() {
     es[0].prepend(btn);
 
     // ボタン要素を作成
-    let btn2 = document.createElement("button2");
+    let btn2 = document.createElement("button");
 
     // ボタンのテキストを設定
     btn2.innerHTML = "Start checking with open link";
