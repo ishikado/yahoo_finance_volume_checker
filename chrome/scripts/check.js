@@ -77,8 +77,8 @@ function check_stock() {
         let tds = es[i].children
         let rawVolume = tds[6].innerHTML
         let rawAvgVolume = tds[8].innerHTML
-        let rawChange = tds[3].querySelector('span[class^="base"]').innerHTML
-        let rawChangePer = tds[2].querySelector('span[class^="base"]').innerHTML
+        let rawChange = tds[3].querySelector('span[class*="base"]').innerHTML
+        let rawChangePer = tds[2].querySelector('span[class*="base"]').innerHTML
 
         let volume = toNumber(rawVolume)
         let avg_volume = toNumber(rawAvgVolume)
