@@ -8,6 +8,7 @@ import sys
 import datetime
 import pytz
 
+# NOTE: テストを書きたい
 def is_summer_time(nytimenow):
     return nytimenow.dst() != None and nytimenow.dst().total_seconds() != 0
 
@@ -18,6 +19,7 @@ def calc_elappsed_time_ratio(now_min, is_summer):
         end_min = 15 * 60
     else:
         # NOTE: こちらの動作確認はできていない
+        # この関数はテスト可能なのでテストを導入するのがよさそう
         start_min = 9 * 60 + 30
         end_min = 16 * 60
 
